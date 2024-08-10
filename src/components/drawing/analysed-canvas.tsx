@@ -8,7 +8,7 @@ export function AnalysedCanvas() {
             id={ANALYSED_CANVAS_ID}
             height={CANVAS_SIZE}
             width={CANVAS_SIZE}
-            className="bg-white"
+            className="bg-neutral-400"
         />
     )
 }
