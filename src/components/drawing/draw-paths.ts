@@ -1,4 +1,4 @@
-import { Path } from "./canvas";
+import { Path } from "./drawing-canvas";
 
 export function drawPaths(canvas: HTMLCanvasElement, paths: Path[]): void {
     console.log('Drawing paths');

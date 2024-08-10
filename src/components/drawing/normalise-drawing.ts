@@ -1,4 +1,4 @@
-import { BoundingBox, Path } from "./canvas";
+import { BoundingBox, Path } from "./drawing-canvas";
 
 /**
  * Normalize the drawing to fit within the canvas

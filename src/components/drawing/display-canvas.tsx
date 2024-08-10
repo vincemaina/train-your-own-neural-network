@@ -1,4 +1,4 @@
-import { CANVAS_SIZE } from "./canvas";
+import { CANVAS_SIZE } from "./drawing-canvas";
 
 interface Props {
     id: string;

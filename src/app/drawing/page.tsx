@@ -1,5 +1,5 @@
-import { DisplayCanvas } from "@/components/drawing/analysed-canvas";
-import { Canvas } from "@/components/drawing/canvas";
+import { DisplayCanvas } from "@/components/drawing/display-canvas";
+import { DrawingCanvas } from "@/components/drawing/drawing-canvas";
 
 export const NORMALIZED_CANVAS_ID = "normalized-canvas";
 export const RASTERIZED_CANVAS_ID = "rasterized-canvas";
@@ -13,7 +13,7 @@ export default function Page() {
                 <p>This page demonstrates how the application takes user inputs (i.e. hand-drawn numbers), and processes them into numerical data that we can pass into the input layer of our neural network.</p>
             </div>
             <div className="grid grid-cols-2 gap-5 max-w-[1020px] mx-auto">
-                <Canvas/>
+                <DrawingCanvas/>
                 <DisplayCanvas id={NORMALIZED_CANVAS_ID}/>
                 <DisplayCanvas id={RASTERIZED_CANVAS_ID}/>
                 <DisplayCanvas id={DIGITIZED_CANVAS_ID}/>

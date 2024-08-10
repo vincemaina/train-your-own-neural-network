@@ -23,7 +23,7 @@ export type BoundingBox = {
     right: number,
 };
 
-export function Canvas() {
+export function DrawingCanvas() {
 
     const canvasRef = useRef<HTMLCanvasElement>(null);
     const [isDrawing, setIsDrawing] = useState<boolean>(false);
