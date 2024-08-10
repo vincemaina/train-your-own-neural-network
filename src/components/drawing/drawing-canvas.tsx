@@ -10,7 +10,7 @@ import { $pixelStore } from "./digitized-panel";
 import { atom } from "nanostores";
 import { useStore } from "@nanostores/react";
 
-export const GRID_SIZE = 28;
+export const GRID_SIZE = 6;
 export const CANVAS_SIZE = 320;
 export const DRAWING_CANVAS_ID = 'drawing-canvas';
 
