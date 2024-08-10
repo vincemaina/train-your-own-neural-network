@@ -7,8 +7,8 @@ import { NORMALIZED_CANVAS_ID, RASTERIZED_CANVAS_ID } from "../../components/dra
 
 export default function Page() {
     return (
-        <div className="flex flex-col text-white">
-            <div className="text-center mb-10">
+        <div className="flex flex-col dark:text-white">
+            <div className="text-center mb-10 container mx-auto">
                 <h1>User Input Processing</h1>
                 <p>
                     This page demonstrates how the application takes user inputs (i.e. hand-drawn numbers),

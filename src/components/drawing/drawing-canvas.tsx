@@ -104,8 +104,6 @@ export function DrawingCanvas() {
     function draw(e: any) {
         if (!isDrawing) return;
 
-        console.log('Drawing...');
-
         e.preventDefault();
 
         const { x, y } = e.type === 'touchmove' ? getTouchPos(e.touches[0]) : {x: e.nativeEvent.offsetX, y: e.nativeEvent.offsetY};
@@ -162,7 +160,7 @@ export function DrawingCanvas() {
         const normalizedCanvas = document.getElementById(NORMALIZED_CANVAS_ID) as HTMLCanvasElement;
         const rasterizedCanvas = document.getElementById(RASTERIZED_CANVAS_ID) as HTMLCanvasElement;
         drawPaths(normalizedCanvas, normalizedPaths);
-        drawPaths(rasterizedCanvas, normalizedPaths);
+        // drawPaths(rasterizedCanvas, normalizedPaths);
 
         // Rasterize the drawing
         const newGrid = rasterizePath(normalizedPaths);

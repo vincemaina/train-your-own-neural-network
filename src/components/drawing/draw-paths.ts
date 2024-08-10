@@ -1,7 +1,6 @@
 import { Path } from "./drawing-canvas";
 
 export function drawPaths(canvas: HTMLCanvasElement, paths: Path[]): void {
-    console.log('Drawing paths');
     
     // Get the context
     const context = canvas.getContext('2d');

@@ -9,8 +9,6 @@ import { BoundingBox, Path } from "./drawing-canvas";
  * @returns The normalized paths
 */
 export function normalizeDrawing(boundingBox: BoundingBox, canvas: HTMLCanvasElement, paths: Path[]): Path[] {
-    console.log('Normalizing drawing');
-
     // Calculate the width and height of the drawing
     const { left, bottom, right, top } = boundingBox;
     const drawingWidth = right - left;

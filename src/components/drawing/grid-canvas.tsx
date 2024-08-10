@@ -7,8 +7,6 @@ export const GRID_CANVAS_ID = 'grid-canvas';
 export const CELLS_CANVAS_ID = 'cells-canvas';
 
 export function drawFilledCells(filledCells: boolean[][]) {
-    console.log('Drawing filled cells');
-
     const canvas = document.getElementById(CELLS_CANVAS_ID) as HTMLCanvasElement;
     const context = canvas.getContext('2d')!;
 

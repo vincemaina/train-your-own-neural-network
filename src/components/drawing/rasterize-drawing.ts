@@ -1,17 +1,11 @@
 import { CANVAS_SIZE, GRID_SIZE, Path } from "./drawing-canvas";
 
 export function rasterizePath(paths: Path[]): boolean[][] {
-    console.log('Rasterizing drawing');
-
-    console.log({paths});
-
     const CELL_SIZE = CANVAS_SIZE / GRID_SIZE;
 
     const newGrid: boolean[][] = Array(GRID_SIZE).fill(null).map(() => Array(GRID_SIZE).fill(false));
 
     for (const path of paths) {
-        console.log('Checking path', path);
-
         for (let i = 0; i < path.length - 1; i++) {
             const startX = path[i].x;
             const startY = path[i].y;
@@ -42,8 +36,6 @@ export function rasterizePath(paths: Path[]): boolean[][] {
 };
 
 function lineIntersectsCell(x1: number, y1: number, x2: number, y2: number, cellX: number, cellY: number, cellWidth: number, cellHeight: number): boolean {
-    console.log('Checking if line intersects cell');
-
     // Check if the line intersects the boundaries of the cell
     const intersectsLeft = lineIntersectsLine(x1, y1, x2, y2, cellX, cellY, cellX, cellY + cellHeight);
     const intersectsRight = lineIntersectsLine(x1, y1, x2, y2, cellX + cellWidth, cellY, cellX + cellWidth, cellY + cellHeight);
