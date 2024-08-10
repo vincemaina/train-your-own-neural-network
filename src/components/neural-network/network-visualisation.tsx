@@ -1,4 +1,6 @@
-import React, { useState, useRef } from "react";
+'use client';
+
+import React, { useState, useRef, useEffect } from "react";
 
 interface NetworkVisualisationProps {
     weights: number[][][];
@@ -9,9 +11,21 @@ interface NetworkVisualisationProps {
 export function NetworkVisualisation({ weights, biases, activations }: NetworkVisualisationProps) {
     const svgWidth = 800;
     const svgHeight = 600;
-    const layerGap = 150; // Distance between layers
-    const nodeGap = 60;   // Distance between nodes in a layer
-    const nodeRadius = 20; // Radius of each node
+    const layerGap = 600; // Distance between layers
+    const nodeGap = 30;   // Distance between nodes in a layer
+    const nodeRadius = 5; // Radius of each node
+
+    const svgRef = useRef<SVGSVGElement>(null);
+
+    useEffect(() => {
+
+        const svg = svgRef.current;
+
+        if (!svg) return;
+
+        svg.addEventListener("wheel", (e) => e.preventDefault(), { passive: false });
+
+    }, [weights, biases, activations]);
 
     const [zoomLevel, setZoomLevel] = useState(1);
     const [offsetX, setOffsetX] = useState(0);
@@ -19,8 +33,6 @@ export function NetworkVisualisation({ weights, biases, activations }: NetworkVi
     const [isPanning, setIsPanning] = useState(false);
     const [startX, setStartX] = useState(0);
     const [startY, setStartY] = useState(0);
-
-    const svgRef = useRef<SVGSVGElement>(null);
 
     // Function to map activation values to color
     const getActivationColor = (activation: number) => {
@@ -39,7 +51,7 @@ export function NetworkVisualisation({ weights, biases, activations }: NetworkVi
     const handleWheel = (event: React.WheelEvent<SVGSVGElement>) => {
         event.preventDefault();
         const zoomFactor = event.deltaY > 0 ? 0.9 : 1.1;
-        setZoomLevel(prevZoom => Math.min(Math.max(prevZoom * zoomFactor, 0.5), 5)); // Limit zoom between 0.5x and 5x
+        setZoomLevel(prevZoom => Math.min(Math.max(prevZoom * zoomFactor, 0.1), 10)); // Limit zoom between 0.1x and 10x
     };
 
     // Mouse down handler for starting panning
@@ -68,15 +80,14 @@ export function NetworkVisualisation({ weights, biases, activations }: NetworkVi
     return (
         <svg
             ref={svgRef}
-            width={svgWidth}
-            height={svgHeight}
             viewBox={`${offsetX} ${offsetY} ${svgWidth / zoomLevel} ${svgHeight / zoomLevel}`}
             onWheel={handleWheel}
             onMouseDown={handleMouseDown}
             onMouseMove={handleMouseMove}
             onMouseUp={handleMouseUp}
             onMouseLeave={handleMouseUp} // Stop panning if mouse leaves the SVG
-            style={{ border: "1px solid black", cursor: isPanning ? "grabbing" : "grab" }}
+            style={{ cursor: isPanning ? "grabbing" : "grab" }}
+            className="border border-white select-none w-[1000px] h-[500px]"
         >
             {weights.map((layer, i) => {
                 const prevLayerNodes = layer[0].length;
@@ -96,7 +107,7 @@ export function NetworkVisualisation({ weights, biases, activations }: NetworkVi
                                         y1={k * nodeGap + prevLayerOffset + nodeRadius}
                                         x2={(i + 1) * layerGap + nodeRadius}
                                         y2={j * nodeGap + currLayerOffset + nodeRadius}
-                                        stroke={`rgba(0, 0, 255, ${Math.abs(weight)})`}
+                                        stroke={`rgba(${255 * (weight**10)}, ${255 * (weight**2)}, ${255 * (weight**1)}, ${Math.abs(weight)})`}
                                         strokeWidth={2}
                                     />
                                 ))}
@@ -122,24 +133,6 @@ export function NetworkVisualisation({ weights, biases, activations }: NetworkVi
                                     fill={activations ? getActivationColor(activations[i][k]) : "white"}
                                     stroke="black"
                                 />
-                                <text
-                                    x={i * layerGap + nodeRadius}
-                                    y={k * nodeGap + prevLayerOffset + nodeRadius / 2}
-                                    fontSize="10"
-                                    textAnchor="middle"
-                                    fill="black"
-                                >
-                                    {biases[i][k]?.toFixed(2)} {/* Bias value */}
-                                </text>
-                                <text
-                                    x={i * layerGap + nodeRadius}
-                                    y={k * nodeGap + prevLayerOffset}
-                                    fontSize="10"
-                                    textAnchor="middle"
-                                    fill="white"
-                                >
-                                    {`L${i}N${k}`} {/* Layer and Node label */}
-                                </text>
                             </g>
                         ))}
                     </g>
@@ -161,24 +154,6 @@ export function NetworkVisualisation({ weights, biases, activations }: NetworkVi
                                     fill={activations ? getActivationColor(activations[i + 1][j]) : "white"}
                                     stroke="black"
                                 />
-                                <text
-                                    x={(i + 1) * layerGap + nodeRadius}
-                                    y={j * nodeGap + currLayerOffset + nodeRadius / 2}
-                                    fontSize="10"
-                                    textAnchor="middle"
-                                    fill="black"
-                                >
-                                    {bias.toFixed(2)} {/* Bias value */}
-                                </text>
-                                <text
-                                    x={(i + 1) * layerGap + nodeRadius}
-                                    y={j * nodeGap + currLayerOffset}
-                                    fontSize="10"
-                                    textAnchor="middle"
-                                    fill="white"
-                                >
-                                    {`L${i + 1}N${j}`} {/* Layer and Node label */}
-                                </text>
                             </g>
                         ))}
                     </g>
