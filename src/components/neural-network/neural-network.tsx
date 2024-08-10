@@ -2,11 +2,16 @@
 
 import { useEffect, useState } from "react";
 import { NetworkVisualisation } from "./network-visualisation";
+import { atom } from "nanostores";
+import { useStore } from "@nanostores/react";
 
 interface Props {
     layers: number[]
     activations?: number[][]
 }
+
+export const $inputLayer = atom<number[] | null>(null);
+export const $outputLayer = atom<number[] | null>(null);
 
 export function NeuralNetwork(props: Props) {
 
@@ -32,7 +37,7 @@ export function NeuralNetwork(props: Props) {
                     weights.push(0.5);
                 }
                 layerWeights.push(weights);
-                layerBiases.push(0.5);
+                layerBiases.push(0);
             }
 
             w.push(layerWeights);
@@ -43,12 +48,44 @@ export function NeuralNetwork(props: Props) {
         setBiases(b);
     }, [props.layers]);
 
+    const inputLayer = useStore($inputLayer);
+    const outputLayer = useStore($outputLayer);
+
+    useEffect(() => {
+        if (!weights || !biases || !inputLayer) {
+            return;
+        }
+
+        const activations: number[][] = [];
+        activations.push(inputLayer);
+
+        for (let i = 0; i < weights.length; i++) {
+            const layerWeights = weights[i];
+            const layerBiases = biases[i];
+            const prevActivations = activations[activations.length - 1];
+
+            const newActivations = layerWeights.map((weights, j) => {
+                const weightedSum = weights.reduce((acc, weight, k) => {
+                    return acc + weight * prevActivations[k];
+                }, layerBiases[j]);
+
+                return 1 / (1 + Math.exp(-weightedSum));
+            });
+
+            activations.push(newActivations);
+        }
+
+        $outputLayer.set(activations[activations.length - 1]);
+    }, [inputLayer]);
+
     if (!weights || !biases) {
         return <div>Loading...</div>;
     }
 
     return (
-        <div className="flex justify-center">
+        <div className="flex flex-col gap-10 justify-center items-center">
+            <pre>{JSON.stringify(outputLayer, undefined, 2)}</pre>
+
             <NetworkVisualisation
                 weights={weights}
                 biases={biases}
