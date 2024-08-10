@@ -4,6 +4,7 @@ import { DisplayCanvas } from "@/components/drawing/display-canvas";
 import { DrawingCanvas } from "@/components/drawing/drawing-canvas";
 import { GridCanvas } from "@/components/drawing/grid-canvas";
 import { NORMALIZED_CANVAS_ID, RASTERIZED_CANVAS_ID } from "../../components/drawing/helpers";
+import { NeuralNetwork } from "@/components/neural-network/neural-network";
 
 export default function Page() {
     return (
@@ -36,6 +37,12 @@ export default function Page() {
                 </div>
 
                 <DigitiizedPanel/>
+            </div>
+
+            <div className="mt-10">
+                <NeuralNetwork
+                    layers={[36, 12, 2]}
+                />
             </div>
         </div>
     )
