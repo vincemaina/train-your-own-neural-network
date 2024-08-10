@@ -13,11 +13,10 @@ export default function Page() {
     return (
         <div>
             <h1>Network</h1>
-            <p>Network content</p>
 
             <NeuralNetwork
-                layers={[80, 40, 20, 10, 5]}
-                activations={activations}
+                layers={[36, 12, 2]}
+                // activations={activations}
             />
         </div>
     )
