@@ -34,6 +34,7 @@ export function normalizeDrawing(boundingBox: BoundingBox, canvas: HTMLCanvasEle
     context.lineWidth = 20;
     context.lineCap = 'round';
     context.strokeStyle = 'black';
+    context.imageSmoothingEnabled = true;
     paths.forEach((path) => {
         path.forEach((point, index) => {
             const scaledX = point.x * scale + offsetX;
