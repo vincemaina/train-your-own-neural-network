@@ -19,7 +19,7 @@ export function normalizeDrawing(boundingBox: BoundingBox, canvas: HTMLCanvasEle
     // Calculate scaling factors
     const scaleX = canvas.width / drawingWidth;
     const scaleY = canvas.height / drawingHeight;
-    const scale = Math.min(scaleX, scaleY);
+    const scale = Math.min(scaleX, scaleY) * 0.9;
 
     const offsetX = (canvas.width - drawingWidth * scale) / 2 - left * scale;
     const offsetY = (canvas.height - drawingHeight * scale) / 2 - top * scale;
