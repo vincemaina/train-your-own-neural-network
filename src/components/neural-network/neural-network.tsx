@@ -13,6 +13,7 @@ export function NeuralNetwork(props: Props) {
     const [weights, setWeights] = useState<number[][][]>();
     const [biases, setBiases] = useState<number[][]>();
 
+    // Initialise weights and biases when the layers change
     useEffect(() => {
         if (props.layers.length < 2) {
             return;
@@ -28,10 +29,10 @@ export function NeuralNetwork(props: Props) {
             for (let j = 0; j < props.layers[i + 1]; j++) {
                 const weights: number[] = [];
                 for (let k = 0; k < props.layers[i]; k++) {
-                    weights.push(Math.random());
+                    weights.push(0.5);
                 }
                 layerWeights.push(weights);
-                layerBiases.push(Math.random());
+                layerBiases.push(0.5);
             }
 
             w.push(layerWeights);
