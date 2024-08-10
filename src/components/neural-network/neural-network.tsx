@@ -5,6 +5,7 @@ import { NetworkVisualisation } from "./network-visualisation";
 
 interface Props {
     layers: number[]
+    activations?: number[][]
 }
 
 export function NeuralNetwork(props: Props) {
@@ -46,9 +47,12 @@ export function NeuralNetwork(props: Props) {
     }
 
     return (
-        <NetworkVisualisation
-            weights={weights}
-            biases={biases}
-        />
+        <div className="flex justify-center">
+            <NetworkVisualisation
+                weights={weights}
+                biases={biases}
+                activations={props.activations}
+            />
+        </div>
     )
 }
