@@ -25,8 +25,8 @@ export function DigitiizedPanel() {
     return (
         <div className="bg-neutral-700 font-mono p-5 text-wrap break-words text-xs leading-none" style={{height: CANVAS_SIZE, width: CANVAS_SIZE}}>
             {pixels.map((row) => (
-                row.map((cell) => (
-                    <span className={cell ? "font-bold" : "opacity-30"}>{cell ? 1: 0}</span>
+                row.map((cell, cellIndex) => (
+                    <span key={cellIndex} className={cell ? "font-bold" : "opacity-30"}>{cell ? 1: 0}</span>
                 ))
             ))}
         </div>

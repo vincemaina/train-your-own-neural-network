@@ -1,6 +1,6 @@
 'use client';
 
-import { NORMALIZED_CANVAS_ID, RASTERIZED_CANVAS_ID } from "@/app/drawing/page";
+import { NORMALIZED_CANVAS_ID, RASTERIZED_CANVAS_ID } from "@/components/drawing/helpers";
 import { CELLS_CANVAS_ID } from "./grid-canvas";
 import { $boundingBoxStore, $pathStore, DRAWING_CANVAS_ID } from "./drawing-canvas";
 import { clearPixels } from "./digitized-panel";

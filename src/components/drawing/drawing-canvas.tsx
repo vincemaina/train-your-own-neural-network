@@ -3,7 +3,7 @@
 import { useEffect, useRef, useState } from "react";
 import { normalizeDrawing } from "./normalise-drawing";
 import { drawPaths } from "./draw-paths";
-import { NORMALIZED_CANVAS_ID, RASTERIZED_CANVAS_ID } from "@/app/drawing/page";
+import { NORMALIZED_CANVAS_ID, RASTERIZED_CANVAS_ID } from "@/components/drawing/helpers";
 import { rasterizePath } from "./rasterize-drawing";
 import { drawFilledCells } from "./grid-canvas";
 import { $pixelStore } from "./digitized-panel";
@@ -110,7 +110,6 @@ export function DrawingCanvas() {
 
         const { x, y } = e.type === 'touchmove' ? getTouchPos(e.touches[0]) : {x: e.nativeEvent.offsetX, y: e.nativeEvent.offsetY};
 
-
         // Update the current path with the new point
         setCurrentPath((prev) => [...prev, {x, y}]);
 
@@ -126,6 +125,8 @@ export function DrawingCanvas() {
             bottom: Math.max(boundingBox.bottom, y),
             right: Math.max(boundingBox.right, x),
         });
+
+        $pathStore.set([...paths.slice(0, -1), [...currentPath, {x, y}]]);
 
         // Draw the line segment on the canvas
         if (!context) {
