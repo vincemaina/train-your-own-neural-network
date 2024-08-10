@@ -7,7 +7,7 @@ export default function Page() {
             <p>Network content</p>
 
             <NeuralNetwork
-                layers={[2, 3, 1]}
+                layers={[8, 4, 2, 1]}
             />
         </div>
     )
