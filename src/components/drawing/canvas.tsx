@@ -91,12 +91,17 @@ export function Canvas() {
         setCurrentPath((prev) => [...prev, {x, y}]);
 
         // Update the bounding box
-        setBoundingBox((prev) => ({
-            top: Math.min(prev.top, y),
-            left: Math.min(prev.left, x),
-            bottom: Math.max(prev.bottom, y),
-            right: Math.max(prev.right, x),
-        }));
+        if (!boundingBox) {
+            console.log('No bounding box');
+            return;
+        }
+
+        setBoundingBox({
+            top: Math.min(boundingBox.top, y),
+            left: Math.min(boundingBox.left, x),
+            bottom: Math.max(boundingBox.bottom, y),
+            right: Math.max(boundingBox.right, x),
+        });
 
         // Draw the line segment on the canvas
         if (!context) {
@@ -120,6 +125,10 @@ export function Canvas() {
 
         // Normalize the drawing
         const canvas = document.getElementById(ANALYSED_CANVAS_ID) as HTMLCanvasElement;
+        if (!boundingBox) {
+            console.log('No bounding box');
+            return;
+        }
         normalizeDrawing(boundingBox, canvas, [...paths, currentPath]);
 
         // Reset the current path
