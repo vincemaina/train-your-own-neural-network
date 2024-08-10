@@ -1,5 +1,6 @@
 import { DisplayCanvas } from "@/components/drawing/display-canvas";
 import { DrawingCanvas } from "@/components/drawing/drawing-canvas";
+import { GridCanvas } from "@/components/drawing/grid-canvas";
 
 export const NORMALIZED_CANVAS_ID = "normalized-canvas";
 export const RASTERIZED_CANVAS_ID = "rasterized-canvas";
@@ -15,7 +16,16 @@ export default function Page() {
             <div className="grid grid-cols-2 gap-5 max-w-[1020px] mx-auto">
                 <DrawingCanvas/>
                 <DisplayCanvas id={NORMALIZED_CANVAS_ID}/>
-                <DisplayCanvas id={RASTERIZED_CANVAS_ID}/>
+
+                <div className="relative">
+                    <DisplayCanvas id={RASTERIZED_CANVAS_ID}/>
+                    <div className="absolute top-0">
+                        <GridCanvas
+                            filledCells={Array(28).fill(null).map(() => Array(28).fill(0))}
+                        />
+                    </div>
+                </div>
+
                 <DisplayCanvas id={DIGITIZED_CANVAS_ID}/>
             </div>
         </>

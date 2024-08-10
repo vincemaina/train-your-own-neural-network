@@ -3,7 +3,9 @@
 import { useEffect, useRef, useState } from "react";
 import { normalizeDrawing } from "./normalise-drawing";
 import { drawPaths } from "./draw-paths";
-import { NORMALIZED_CANVAS_ID } from "@/app/drawing/page";
+import { NORMALIZED_CANVAS_ID, RASTERIZED_CANVAS_ID } from "@/app/drawing/page";
+import { rasterizePath } from "./rasterize-drawing";
+import { drawFilledCells } from "./grid-canvas";
 
 export const GRID_SIZE = 28;
 export const CANVAS_SIZE = 500;
@@ -31,9 +33,6 @@ export function DrawingCanvas() {
     const [currentPath, setCurrentPath] = useState<Path>([]);
     const [paths, setPaths] = useState<Path[]>([]);  // Stores the paths
     const [boundingBox, setBoundingBox] = useState<BoundingBox>();
-    const [pixelGrid, setPixelGrid] = useState<number[][]>(
-        Array.from({ length: GRID_SIZE }, () => Array.from({ length: GRID_SIZE }, () => 0))
-    );
 
     useEffect(() => {
         const canvas = canvasRef.current;
@@ -128,16 +127,18 @@ export function DrawingCanvas() {
         const normalizedPaths = normalizeDrawing(boundingBox!, canvasRef.current!, [...paths, currentPath]);
         
         // Draw the normalized paths on the analysed canvas
-        const canvas = document.getElementById(NORMALIZED_CANVAS_ID) as HTMLCanvasElement;
-        drawPaths(canvas, normalizedPaths);
+        const normalizedCanvas = document.getElementById(NORMALIZED_CANVAS_ID) as HTMLCanvasElement;
+        const rasterizedCanvas = document.getElementById(RASTERIZED_CANVAS_ID) as HTMLCanvasElement;
+        drawPaths(normalizedCanvas, normalizedPaths);
+        drawPaths(rasterizedCanvas, normalizedPaths);
 
         // Rasterize the drawing
-
-
+        const newGrid = rasterizePath(normalizedPaths);
+        drawFilledCells(newGrid);
 
         // Reset the current path
         setCurrentPath([]);
-    }
+    };
 
     return (
         <canvas
