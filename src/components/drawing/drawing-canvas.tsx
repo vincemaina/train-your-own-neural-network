@@ -53,17 +53,32 @@ export function DrawingCanvas() {
             ctx.lineCap = 'round';
             ctx.strokeStyle = 'black';
             setContext(ctx);
+
+            // Prevent default touch behavior (scrolling, zooming) on the canvas
+            canvas.addEventListener('touchstart', (e) => e.preventDefault(), { passive: false });
+            canvas.addEventListener('touchmove', (e) => e.preventDefault(), { passive: false });
+            canvas.addEventListener('touchend', (e) => e.preventDefault(), { passive: false });
         }
     }, [canvasRef]);
 
+    function getTouchPos(touch: any) {
+        const rect = canvasRef.current!.getBoundingClientRect();
+        return {
+            x: touch.clientX - rect.left,
+            y: touch.clientY - rect.top,
+        };
+    }
+
     function startDrawing(e: any) {
         console.log('Start drawing');
+
+        e.preventDefault();
         
         setIsDrawing(true);
         
+        const {x, y} = e.type === 'mousedown' ? {x: e.nativeEvent.offsetX, y: e.nativeEvent.offsetY} : getTouchPos(e.touches[0]);
+        
         // Initialise the current path with the starting point
-        const x = e.nativeEvent.offsetX;
-        const y = e.nativeEvent.offsetY;
         setCurrentPath([{x, y}]);
         
         // Initalise or update the bounding box
@@ -90,9 +105,11 @@ export function DrawingCanvas() {
         if (!isDrawing) return;
 
         console.log('Drawing...');
-    
-        const x = e.nativeEvent.offsetX;
-        const y = e.nativeEvent.offsetY;
+
+        e.preventDefault();
+
+        const { x, y } = e.type === 'touchmove' ? getTouchPos(e.touches[0]) : {x: e.nativeEvent.offsetX, y: e.nativeEvent.offsetY};
+
 
         // Update the current path with the new point
         setCurrentPath((prev) => [...prev, {x, y}]);
