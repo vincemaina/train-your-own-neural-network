@@ -6,9 +6,13 @@ import { drawPaths } from "./draw-paths";
 import { NORMALIZED_CANVAS_ID, RASTERIZED_CANVAS_ID } from "@/app/drawing/page";
 import { rasterizePath } from "./rasterize-drawing";
 import { drawFilledCells } from "./grid-canvas";
+import { $pixelStore } from "./digitized-panel";
+import { atom } from "nanostores";
+import { useStore } from "@nanostores/react";
 
 export const GRID_SIZE = 28;
-export const CANVAS_SIZE = 500;
+export const CANVAS_SIZE = 320;
+export const DRAWING_CANVAS_ID = 'drawing-canvas';
 
 /**
  * A path is an array of points that represent a line drawn on the canvas.
@@ -25,14 +29,17 @@ export type BoundingBox = {
     right: number,
 };
 
+export const $pathStore = atom<Path[]>([]);
+export const $boundingBoxStore = atom<BoundingBox | null>(null);
+
 export function DrawingCanvas() {
 
     const canvasRef = useRef<HTMLCanvasElement>(null);
     const [isDrawing, setIsDrawing] = useState<boolean>(false);
     const [context, setContext] = useState<CanvasRenderingContext2D | null>(null);
     const [currentPath, setCurrentPath] = useState<Path>([]);
-    const [paths, setPaths] = useState<Path[]>([]);  // Stores the paths
-    const [boundingBox, setBoundingBox] = useState<BoundingBox>();
+    const paths = useStore($pathStore);
+    const boundingBox = useStore($boundingBoxStore);
 
     useEffect(() => {
         const canvas = canvasRef.current;
@@ -61,9 +68,9 @@ export function DrawingCanvas() {
         
         // Initalise or update the bounding box
         if (!boundingBox) {
-            setBoundingBox({top: y, left: x, bottom: y, right: x});
+            $boundingBoxStore.set({top: y, left: x, bottom: y, right: x});
         } else {
-            setBoundingBox({
+            $boundingBoxStore.set({
                 top: Math.min(boundingBox.top, y),
                 left: Math.min(boundingBox.left, x),
                 bottom: Math.max(boundingBox.bottom, y),
@@ -96,7 +103,7 @@ export function DrawingCanvas() {
             return;
         }
 
-        setBoundingBox({
+        $boundingBoxStore.set({
             top: Math.min(boundingBox.top, y),
             left: Math.min(boundingBox.left, x),
             bottom: Math.max(boundingBox.bottom, y),
@@ -121,10 +128,17 @@ export function DrawingCanvas() {
         setIsDrawing(false);
 
         // Save the completed path
-        setPaths((prev) => [...prev, currentPath]);
+        $pathStore.set([...paths, currentPath]);
+
+        // Reset the current path
+        setCurrentPath([]);
+    };
+
+    useEffect(() => {
+        if (paths.length < 1) return;
 
         // Normalize the drawing    
-        const normalizedPaths = normalizeDrawing(boundingBox!, canvasRef.current!, [...paths, currentPath]);
+        const normalizedPaths = normalizeDrawing(boundingBox!, canvasRef.current!, paths);
         
         // Draw the normalized paths on the analysed canvas
         const normalizedCanvas = document.getElementById(NORMALIZED_CANVAS_ID) as HTMLCanvasElement;
@@ -136,21 +150,25 @@ export function DrawingCanvas() {
         const newGrid = rasterizePath(normalizedPaths);
         drawFilledCells(newGrid);
 
-        // Reset the current path
-        setCurrentPath([]);
-    };
+        $pixelStore.set(newGrid);
+
+    }, [paths]);
 
     return (
         <canvas
-            id="canvas"
+            id={DRAWING_CANVAS_ID}
             ref={canvasRef}
             height={CANVAS_SIZE}
             width={CANVAS_SIZE}
             className="bg-white"
             onMouseDown={startDrawing}
+            onTouchStart={startDrawing}
             onMouseMove={draw}
+            onTouchMove={draw}
             onMouseUp={stopDrawing}
+            onTouchEnd={stopDrawing}
             onMouseLeave={stopDrawing}
+            onTouchCancel={stopDrawing}
         />
     );
 }

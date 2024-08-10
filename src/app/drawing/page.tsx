@@ -1,3 +1,5 @@
+import { ClearButton } from "@/components/drawing/clear-canvases";
+import { DigitiizedPanel } from "@/components/drawing/digitized-panel";
 import { DisplayCanvas } from "@/components/drawing/display-canvas";
 import { DrawingCanvas } from "@/components/drawing/drawing-canvas";
 import { GridCanvas } from "@/components/drawing/grid-canvas";
@@ -8,13 +10,18 @@ export const DIGITIZED_CANVAS_ID = "digitized-canvas";
 
 export default function Page() {
     return (
-        <>
-            <div className="text-center mb-5">
+        <div className="flex flex-col text-white">
+            <div className="text-center mb-10">
                 <h1>User Input Processing</h1>
                 <p>This page demonstrates how the application takes user inputs (i.e. hand-drawn numbers), and processes them into numerical data that we can pass into the input layer of our neural network.</p>
+                <p>Start by drawing a number in the first square.</p>
             </div>
-            <div className="grid grid-cols-2 gap-5 max-w-[1020px] mx-auto">
-                <DrawingCanvas/>
+
+            <div className="flex gap-5 mx-auto">
+                <div className="relative">
+                    <DrawingCanvas/>
+                    <ClearButton/>
+                </div>
                 <DisplayCanvas id={NORMALIZED_CANVAS_ID}/>
 
                 <div className="relative">
@@ -26,8 +33,8 @@ export default function Page() {
                     </div>
                 </div>
 
-                <DisplayCanvas id={DIGITIZED_CANVAS_ID}/>
+                <DigitiizedPanel/>
             </div>
-        </>
+        </div>
     )
 }
