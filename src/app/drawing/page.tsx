@@ -14,10 +14,10 @@ export default function Page() {
             <div className="text-center mb-10">
                 <h1>User Input Processing</h1>
                 <p>This page demonstrates how the application takes user inputs (i.e. hand-drawn numbers), and processes them into numerical data that we can pass into the input layer of our neural network.</p>
-                <p>Start by drawing a number in the first square.</p>
+                <p className="font-semibold text-blue-400">Start by drawing a number in the first square.</p>
             </div>
 
-            <div className="flex gap-5 mx-auto">
+            <div className="flex flex-wrap flex-col md:flex-row justify-center gap-5 mx-auto">
                 <div className="relative">
                     <DrawingCanvas/>
                     <ClearButton/>
