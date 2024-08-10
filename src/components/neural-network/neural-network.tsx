@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import { NetworkVisualisation } from "./network-visualisation";
 import { atom } from "nanostores";
 import { useStore } from "@nanostores/react";
+import { ConfidenceMeterList } from "./confidence-meter-list";
 
 interface Props {
     layers: number[];
@@ -14,7 +15,7 @@ export const $inputLayer = atom<number[] | null>(null);
 export const $outputLayer = atom<number[] | null>(null);
 export const $expectedOutput = atom<number[]>([0, 1]);
 
-export function NeuralNetwork({ layers, learningRate = 0.1 }: Props) {
+export function NeuralNetwork({ layers, learningRate = 0.5 }: Props) {
 
     const [weights, setWeights] = useState<number[][][]>();
     const [biases, setBiases] = useState<number[][]>();
@@ -154,18 +155,21 @@ export function NeuralNetwork({ layers, learningRate = 0.1 }: Props) {
     return (
         <div className="flex flex-col gap-10 justify-center items-center">
             <pre onClick={() => $expectedOutput.set(expectedOutput[0] == 0 ? [1, 0]: [0, 1])}>Expected: {JSON.stringify(expectedOutput)}</pre>
-            <pre>{JSON.stringify(outputLayer, undefined, 2)}</pre>
+
+            {/* Simulate drawing input */}
+            <button onClick={() => handleDrawingComplete()} className="bg-neutral-700 p-3 rounded">
+                Simulate Drawing
+            </button>
+
+            <ConfidenceMeterList
+                labels={["0", "1"]}
+            />
 
             <NetworkVisualisation
                 weights={weights}
                 biases={biases}
                 // activations={activations}
             />
-
-            {/* Simulate drawing input */}
-            <button onClick={() => handleDrawingComplete()}>
-                Simulate Drawing
-            </button>
         </div>
     );
 }
