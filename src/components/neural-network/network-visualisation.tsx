@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState, useRef } from "react";
 
 interface NetworkVisualisationProps {
     weights: number[][][];
@@ -13,6 +13,15 @@ export function NetworkVisualisation({ weights, biases, activations }: NetworkVi
     const nodeGap = 60;   // Distance between nodes in a layer
     const nodeRadius = 20; // Radius of each node
 
+    const [zoomLevel, setZoomLevel] = useState(1);
+    const [offsetX, setOffsetX] = useState(0);
+    const [offsetY, setOffsetY] = useState(0);
+    const [isPanning, setIsPanning] = useState(false);
+    const [startX, setStartX] = useState(0);
+    const [startY, setStartY] = useState(0);
+
+    const svgRef = useRef<SVGSVGElement>(null);
+
     // Function to map activation values to color
     const getActivationColor = (activation: number) => {
         const r = Math.floor(255 * (1 - activation));
@@ -26,8 +35,49 @@ export function NetworkVisualisation({ weights, biases, activations }: NetworkVi
         return (svgHeight - totalNodeHeight) / 2;
     };
 
+    // Zoom handler
+    const handleWheel = (event: React.WheelEvent<SVGSVGElement>) => {
+        event.preventDefault();
+        const zoomFactor = event.deltaY > 0 ? 0.9 : 1.1;
+        setZoomLevel(prevZoom => Math.min(Math.max(prevZoom * zoomFactor, 0.5), 5)); // Limit zoom between 0.5x and 5x
+    };
+
+    // Mouse down handler for starting panning
+    const handleMouseDown = (event: React.MouseEvent<SVGSVGElement>) => {
+        setIsPanning(true);
+        setStartX(event.clientX);
+        setStartY(event.clientY);
+    };
+
+    // Mouse move handler for panning
+    const handleMouseMove = (event: React.MouseEvent<SVGSVGElement>) => {
+        if (!isPanning) return;
+        const dx = (startX - event.clientX) / zoomLevel;
+        const dy = (startY - event.clientY) / zoomLevel;
+        setOffsetX(prevOffsetX => prevOffsetX + dx);
+        setOffsetY(prevOffsetY => prevOffsetY + dy);
+        setStartX(event.clientX);
+        setStartY(event.clientY);
+    };
+
+    // Mouse up handler for ending panning
+    const handleMouseUp = () => {
+        setIsPanning(false);
+    };
+
     return (
-        <svg width={svgWidth} height={svgHeight}>
+        <svg
+            ref={svgRef}
+            width={svgWidth}
+            height={svgHeight}
+            viewBox={`${offsetX} ${offsetY} ${svgWidth / zoomLevel} ${svgHeight / zoomLevel}`}
+            onWheel={handleWheel}
+            onMouseDown={handleMouseDown}
+            onMouseMove={handleMouseMove}
+            onMouseUp={handleMouseUp}
+            onMouseLeave={handleMouseUp} // Stop panning if mouse leaves the SVG
+            style={{ border: "1px solid black", cursor: isPanning ? "grabbing" : "grab" }}
+        >
             {weights.map((layer, i) => {
                 const prevLayerNodes = layer[0].length;
                 const currLayerNodes = layer.length;
@@ -46,8 +96,8 @@ export function NetworkVisualisation({ weights, biases, activations }: NetworkVi
                                         y1={k * nodeGap + prevLayerOffset + nodeRadius}
                                         x2={(i + 1) * layerGap + nodeRadius}
                                         y2={j * nodeGap + currLayerOffset + nodeRadius}
-                                        stroke={`rgba(200, 200, 255, ${Math.abs(weight)})`}
-                                        strokeWidth={1}
+                                        stroke={`rgba(0, 0, 255, ${Math.abs(weight)})`}
+                                        strokeWidth={2}
                                     />
                                 ))}
                             </g>
@@ -56,7 +106,7 @@ export function NetworkVisualisation({ weights, biases, activations }: NetworkVi
                 );
             })}
 
-            {/* Draw nodes and labels */}
+            {/* Draw nodes, labels, and biases */}
             {weights.map((layer, i) => {
                 const prevLayerNodes = layer[0].length;
                 const prevLayerOffset = calculateVerticalOffset(prevLayerNodes);
@@ -68,11 +118,19 @@ export function NetworkVisualisation({ weights, biases, activations }: NetworkVi
                                 <circle
                                     cx={i * layerGap + nodeRadius}
                                     cy={k * nodeGap + prevLayerOffset + nodeRadius}
-                                    r={nodeRadius / 1.5}
-                                    fill={activations ? getActivationColor(activations[i][k]) : "rgba(200, 200, 255, 1)"}
-                                    stroke="blue"
-                                    strokeWidth={2}
+                                    r={nodeRadius}
+                                    fill={activations ? getActivationColor(activations[i][k]) : "white"}
+                                    stroke="black"
                                 />
+                                <text
+                                    x={i * layerGap + nodeRadius}
+                                    y={k * nodeGap + prevLayerOffset + nodeRadius / 2}
+                                    fontSize="10"
+                                    textAnchor="middle"
+                                    fill="black"
+                                >
+                                    {biases[i][k]?.toFixed(2)} {/* Bias value */}
+                                </text>
                                 <text
                                     x={i * layerGap + nodeRadius}
                                     y={k * nodeGap + prevLayerOffset}
@@ -88,22 +146,30 @@ export function NetworkVisualisation({ weights, biases, activations }: NetworkVi
                 );
             })}
 
-            {/* Draw output layer nodes and labels */}
+            {/* Draw output layer nodes, labels, and biases */}
             {biases.map((layerBiases, i) => {
                 const currLayerOffset = calculateVerticalOffset(layerBiases.length);
 
                 return (
                     <g key={i}>
-                        {layerBiases.map((_, j) => (
+                        {layerBiases.map((bias, j) => (
                             <g key={j}>
                                 <circle
                                     cx={(i + 1) * layerGap + nodeRadius}
                                     cy={j * nodeGap + currLayerOffset + nodeRadius}
-                                    r={nodeRadius / 1.5}
-                                    fill={activations ? getActivationColor(activations[i + 1][j]) : "rgba(200, 200, 255, 1)"}
-                                    stroke="blue"
-                                    strokeWidth={2}
+                                    r={nodeRadius}
+                                    fill={activations ? getActivationColor(activations[i + 1][j]) : "white"}
+                                    stroke="black"
                                 />
+                                <text
+                                    x={(i + 1) * layerGap + nodeRadius}
+                                    y={j * nodeGap + currLayerOffset + nodeRadius / 2}
+                                    fontSize="10"
+                                    textAnchor="middle"
+                                    fill="black"
+                                >
+                                    {bias.toFixed(2)} {/* Bias value */}
+                                </text>
                                 <text
                                     x={(i + 1) * layerGap + nodeRadius}
                                     y={j * nodeGap + currLayerOffset}
