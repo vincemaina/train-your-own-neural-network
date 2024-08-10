@@ -1,6 +1,14 @@
 import { BoundingBox, Path } from "./canvas";
 
-export function normalizeDrawing(boundingBox: BoundingBox, canvas: HTMLCanvasElement, paths: Path[]) {
+/**
+ * Normalize the drawing to fit within the canvas
+ * 
+ * @param boundingBox The bounding box of the drawing
+ * @param canvas The canvas element
+ * @param paths The paths of the drawing
+ * @returns The normalized paths
+*/
+export function normalizeDrawing(boundingBox: BoundingBox, canvas: HTMLCanvasElement, paths: Path[]): Path[] {
     console.log('Normalizing drawing');
 
     // Calculate the width and height of the drawing
