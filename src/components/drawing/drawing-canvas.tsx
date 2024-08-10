@@ -9,6 +9,7 @@ import { drawFilledCells } from "./grid-canvas";
 import { $pixelStore } from "./digitized-panel";
 import { atom } from "nanostores";
 import { useStore } from "@nanostores/react";
+import { $inputLayer } from "../neural-network/neural-network";
 
 export const GRID_SIZE = 6;
 export const CANVAS_SIZE = 320;
@@ -158,15 +159,15 @@ export function DrawingCanvas() {
         
         // Draw the normalized paths on the analysed canvas
         const normalizedCanvas = document.getElementById(NORMALIZED_CANVAS_ID) as HTMLCanvasElement;
-        const rasterizedCanvas = document.getElementById(RASTERIZED_CANVAS_ID) as HTMLCanvasElement;
         drawPaths(normalizedCanvas, normalizedPaths);
-        // drawPaths(rasterizedCanvas, normalizedPaths);
 
         // Rasterize the drawing
         const newGrid = rasterizePath(normalizedPaths);
         drawFilledCells(newGrid);
 
         $pixelStore.set(newGrid);
+
+        $inputLayer.set(newGrid.flat().map((cell) => cell ? 1 : 0));
 
     }, [paths]);
 
