@@ -16,9 +16,6 @@ export function normalizeDrawing(boundingBox: BoundingBox, canvas: HTMLCanvasEle
     const drawingWidth = right - left;
     const drawingHeight = bottom - top;
 
-    console.log('Drawing width:', drawingWidth);
-    console.log('Drawing height:', drawingHeight);
-
     // Calculate scaling factors
     const scaleX = canvas.width / drawingWidth;
     const scaleY = canvas.height / drawingHeight;
@@ -27,32 +24,13 @@ export function normalizeDrawing(boundingBox: BoundingBox, canvas: HTMLCanvasEle
     const offsetX = (canvas.width - drawingWidth * scale) / 2 - left * scale;
     const offsetY = (canvas.height - drawingHeight * scale) / 2 - top * scale;
 
-    // Get the context
-    const context = canvas.getContext('2d');
-    if (!context) {
-        console.log('No context');
-        return;
-    }
+    // Normalize the path points
+    const normalizedPaths = paths.map((path) =>
+        path.map((point) => ({
+        x: point.x * scale + offsetX,
+        y: point.y * scale + offsetY,
+        }))
+    );
 
-    // Clear the canvas
-    context.clearRect(0, 0, canvas.width, canvas.height);
-
-    // Redraw each path scaled and translated
-    context.beginPath();
-    context.lineWidth = 20;
-    context.lineCap = 'round';
-    context.strokeStyle = 'black';
-    context.imageSmoothingEnabled = true;
-    paths.forEach((path) => {
-        path.forEach((point, index) => {
-            const scaledX = point.x * scale + offsetX;
-            const scaledY = point.y * scale + offsetY;
-            if (index === 0) {
-                context.moveTo(scaledX, scaledY);
-            } else {
-                context.lineTo(scaledX, scaledY);
-            }
-        });
-    });
-    context.stroke();
+    return normalizedPaths;
 };
