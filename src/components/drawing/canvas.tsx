@@ -2,7 +2,8 @@
 
 import { useEffect, useRef, useState } from "react";
 import { normalizeDrawing } from "./normalise-drawing";
-import { ANALYSED_CANVAS_ID } from "./analysed-canvas";
+import { drawPaths } from "./draw-paths";
+import { NORMALIZED_CANVAS_ID } from "@/app/drawing/page";
 
 export const GRID_SIZE = 28;
 export const CANVAS_SIZE = 500;
@@ -123,13 +124,16 @@ export function Canvas() {
         // Save the completed path
         setPaths((prev) => [...prev, currentPath]);
 
-        // Normalize the drawing
-        const canvas = document.getElementById(ANALYSED_CANVAS_ID) as HTMLCanvasElement;
-        if (!boundingBox) {
-            console.log('No bounding box');
-            return;
-        }
-        normalizeDrawing(boundingBox, canvas, [...paths, currentPath]);
+        // Normalize the drawing    
+        const normalizedPaths = normalizeDrawing(boundingBox!, canvasRef.current!, [...paths, currentPath]);
+        
+        // Draw the normalized paths on the analysed canvas
+        const canvas = document.getElementById(NORMALIZED_CANVAS_ID) as HTMLCanvasElement;
+        drawPaths(canvas, normalizedPaths);
+
+        // Rasterize the drawing
+
+
 
         // Reset the current path
         setCurrentPath([]);
