@@ -81,13 +81,15 @@ export function NetworkVisualisation({ weights, biases, activations }: NetworkVi
         <svg
             ref={svgRef}
             viewBox={`${offsetX} ${offsetY} ${svgWidth / zoomLevel} ${svgHeight / zoomLevel}`}
+            width={svgWidth}
+            height={svgHeight}
             onWheel={handleWheel}
             onMouseDown={handleMouseDown}
             onMouseMove={handleMouseMove}
             onMouseUp={handleMouseUp}
             onMouseLeave={handleMouseUp} // Stop panning if mouse leaves the SVG
             style={{ cursor: isPanning ? "grabbing" : "grab" }}
-            className="border border-white select-none w-[1000px] h-[500px]"
+            className="border border-white select-none"
         >
             {weights.map((layer, i) => {
                 const prevLayerNodes = layer[0].length;
