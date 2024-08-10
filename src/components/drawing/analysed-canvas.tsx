@@ -1,11 +1,13 @@
 import { CANVAS_SIZE } from "./canvas";
 
-export const ANALYSED_CANVAS_ID = "analysed-canvas";
+interface Props {
+    id: string;
+}
 
-export function AnalysedCanvas() {
+export function DisplayCanvas(props: Props) {
     return (
         <canvas
-            id={ANALYSED_CANVAS_ID}
+            id={props.id}
             height={CANVAS_SIZE}
             width={CANVAS_SIZE}
             className="bg-neutral-400"
