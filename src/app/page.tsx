@@ -12,7 +12,7 @@ export default function Page() {
             <div className="text-center mb-10 container mx-auto">
                 <h1>Train Your Own Neural Network</h1>
                 <p>
-                    This tools allows you to train a simple neural network from scratch to recognize handwritten characters.
+                    This tool allows you to train a simple neural network from scratch to recognize handwritten characters.
                     <span className="font-semibold text-blue-400"> Start by drawing a character in the first square. </span>
                 </p>
             </div>
