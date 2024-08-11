@@ -6,6 +6,7 @@ import { atom } from "nanostores";
 import { useStore } from "@nanostores/react";
 import { ConfidenceMeterList } from "./confidence-meter-list";
 import { Avatar } from "../avatar/avatar";
+import { clearCanvases } from "../drawing/clear-canvases";
 
 interface Props {
     layers: number[];
@@ -165,7 +166,10 @@ export function NeuralNetwork({ layers, learningRate = 0.5 }: Props) {
             />
 
             <div className="flex flex-col gap-5">
-                <div onClick={() => $expectedOutput.set(expectedOutput[0] == 0 ? [1, 0]: [0, 1])}
+                <div onClick={() => {
+                    $expectedOutput.set(expectedOutput[0] == 0 ? [1, 0]: [0, 1]);
+                    clearCanvases();
+                }}
                     className={`bg-neutral-700 p-3 rounded cursor-pointer text-center ${expectedOutput[0] == 0 ? "text-green-400" : "text-red-400"}`}
                 >
                     Mode {"->"} {expectedOutput[0] == 0 ? "O" : "X"}
