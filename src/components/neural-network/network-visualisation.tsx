@@ -9,8 +9,8 @@ interface NetworkVisualisationProps {
 }
 
 export function NetworkVisualisation({ weights, biases, activations }: NetworkVisualisationProps) {
-    const svgWidth = 1200;
-    const svgHeight = 600;
+    const svgWidth = 600;
+    const svgHeight = 300;
     const layerGap = 600; // Distance between layers
     const nodeGap = 30;   // Distance between nodes in a layer
     const nodeRadius = 5; // Radius of each node
