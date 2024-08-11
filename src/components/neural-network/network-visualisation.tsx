@@ -27,9 +27,9 @@ export function NetworkVisualisation({ weights, biases, activations }: NetworkVi
 
     }, [weights, biases, activations]);
 
-    const [zoomLevel, setZoomLevel] = useState(1);
-    const [offsetX, setOffsetX] = useState(0);
-    const [offsetY, setOffsetY] = useState(0);
+    const [zoomLevel, setZoomLevel] = useState(0.4);
+    const [offsetX, setOffsetX] = useState(-100);
+    const [offsetY, setOffsetY] = useState(-250);
     const [isPanning, setIsPanning] = useState(false);
     const [startX, setStartX] = useState(0);
     const [startY, setStartY] = useState(0);
