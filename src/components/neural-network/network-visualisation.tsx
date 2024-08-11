@@ -1,14 +1,15 @@
 'use client';
 
+import { useStore } from "@nanostores/react";
 import React, { useState, useRef, useEffect } from "react";
+import { $activations } from "./neural-network";
 
 interface NetworkVisualisationProps {
     weights: number[][][];
     biases: number[][];
-    activations?: number[][]; // Optional: Pass activations to visualize them
 }
 
-export function NetworkVisualisation({ weights, biases, activations }: NetworkVisualisationProps) {
+export function NetworkVisualisation({ weights, biases }: NetworkVisualisationProps) {
     const svgWidth = 600;
     const svgHeight = 300;
     const layerGap = 600; // Distance between layers
@@ -16,6 +17,8 @@ export function NetworkVisualisation({ weights, biases, activations }: NetworkVi
     const nodeRadius = 5; // Radius of each node
 
     const svgRef = useRef<SVGSVGElement>(null);
+
+    const activations = useStore($activations);
 
     useEffect(() => {
 

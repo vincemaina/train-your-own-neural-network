@@ -15,6 +15,7 @@ interface Props {
 export const $inputLayer = atom<number[] | null>(null);
 export const $outputLayer = atom<number[] | null>(null);
 export const $expectedOutput = atom<number[]>([0, 1]);
+export const $activations = atom<number[][] | null>(null);
 
 export function NeuralNetwork({ layers, learningRate = 0.5 }: Props) {
 
@@ -61,13 +62,14 @@ export function NeuralNetwork({ layers, learningRate = 0.5 }: Props) {
         }
 
         // Feedforward
-        const activations: number[][] = [];
-        activations.push(inputLayer);
+
+        $activations.set([]);
+        $activations.set([inputLayer]);
 
         for (let i = 0; i < weights.length; i++) {
             const layerWeights = weights[i];
             const layerBiases = biases[i];
-            const prevActivations = activations[activations.length - 1];
+            const prevActivations = $activations.get()![$activations.get()!.length - 1];
 
             const newActivations = layerWeights.map((weights, j) => {
                 const weightedSum = weights.reduce((acc, weight, k) => {
@@ -77,10 +79,11 @@ export function NeuralNetwork({ layers, learningRate = 0.5 }: Props) {
                 return 1 / (1 + Math.exp(-weightedSum)); // Sigmoid activation
             });
 
-            activations.push(newActivations);
+            // activations.push(newActivations);
+            $activations.set([...$activations.get()!, newActivations]);
         }
 
-        $outputLayer.set(activations[activations.length - 1]);
+        $outputLayer.set($activations.get()![$activations.get()!.length - 1]);
 
     }, [inputLayer, weights, biases]);
 
