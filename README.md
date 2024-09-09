@@ -1,6 +1,6 @@
 # Train your own neural network
 
-Try it out here: https://train-your-own-neural-network.vercel.app/
+Try it out here: [https://train-your-own-neural-network.vercel.app/](https://train-your-own-neural-network.vercel.app/)
 
 ## Demo
 
